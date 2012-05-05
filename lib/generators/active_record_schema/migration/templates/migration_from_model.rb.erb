@@ -1,0 +1,11 @@
+class <%= migration_class_name %> < ActiveRecord::Migration
+  def change
+<%- model.schema.diff(:fields, :add).each do |field| -%>
+    add_column :<%= model.table_name %>, :<%= field.name %>, :<%= field.type %><%= ", #{field.options.inspect}" if !field.options.blank? %>
+<%- end -%>
+
+<%- model.schema.diff(:indexes, :add).each do |index| -%>
+    add_index :<%= model.table_name %>, :<%= index.name %><%= ", #{index.options.inspect}" if !index.options.blank? %>
+<%- end -%>
+  end  
+end
