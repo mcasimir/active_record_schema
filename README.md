@@ -1,9 +1,8 @@
 # ActiveRecordSchema
 
-*ActiveRecordSchema* is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models
+*ActiveRecordSchema* is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models.
 
-Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their enhancing their positive sides and contrasting their defects.
-
+Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use enhancing their positive sides and contrasting their defects.
 
 Install
 
@@ -48,28 +47,28 @@ Will generate the following migration
 
 _ex._
 
-  # content.rb
-  class Content < ActiveRecord::Base
-    schema(:inheritable => true) do
-      field :title
+    # content.rb
+    class Content < ActiveRecord::Base
+      schema(:inheritable => true) do
+        field :title
     
-      timestamps!
+        timestamps!
+      end
     end
-  end
   
-  # article.rb
-  class Article < Content
-    schema do
-      field :body, :as => :text
+    # article.rb
+    class Article < Content
+      schema do
+        field :body, :as => :text
+      end
     end
-  end
   
-  # video.rb
-  class Video < Content
-    schema do
-      field :url
+    # video.rb
+    class Video < Content
+      schema do
+        field :url
+      end
     end
-  end
   
 
 ## Contributing to active_record_schema
