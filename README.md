@@ -1,10 +1,24 @@
 # ActiveRecordSchema
 
-*ActiveRecordSchema* is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models.
+**ActiveRecordSchema** is an `ActiveRecord` extension that allows you to write database schema for a model within the model itself and to generate migrations directly from models.
 
 Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.
 
-Install
+## Features
+
+* Defining columns and indexes directly in model
+* Generation of migration from the model taking into account the current state of the database
+* Automatically add code to migrate associations:
+   * `foreign_key` for `belongs_to`
+   * Join table for `has_and_belongs_to_many`
+  
+* Automatic indexing of foreign keys for both belongs_to and hbtm (configurable)
+* Impact zero in production
+
+
+## Installation
+
+Put this in your Gemfile
 
     gem 'active_record_schema'
     
@@ -83,7 +97,7 @@ Now running
 
     rails g migration add_voters_to_posts --from Post
 
-Will generate:
+will generate:
 
     class AddVotersToPosts < ActiveRecord::Migration
       def change
@@ -126,7 +140,7 @@ _ex._
       field :url
     end
 
-run
+Running
     
     rails g migration init_contents --from Content
 
@@ -159,7 +173,39 @@ Will generate the following migration
       end  
     end
 
+## Mixins
 
+Probably one of the most significant advantage offered by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixin
+
+``` rb
+_ex._
+
+    module Profile
+      extend ActiveSupport::Concern
+      included do
+        field :name
+        field :age, :as => :integer
+      
+      end
+    end
+    
+    class User < ActiveRecord::Base
+      include Profile
+  
+    end
+    
+    class Player < ActiveRecord::Base
+      include Profile
+      
+    end
+```
+    
+## Migrating from other ORMs
+
+
+
+
+## Why not also generate irreversible changes (change/remove columns)?
 
 ## Contributing to active_record_schema
  
@@ -170,7 +216,6 @@ Will generate the following migration
 * Commit and push until you are happy with your contribution.
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
-
 
 ---
 
