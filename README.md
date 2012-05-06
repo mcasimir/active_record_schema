@@ -20,11 +20,11 @@ Put this in your Gemfile
 
     gem 'active_record_schema'
     
-Update your bundle
+and update your bundle
   
     bundle install
     
-**NOTE** - ActiveRecordSchema depends on `rails ~> 3.0` and not only `ActiveRecord`
+**NOTE:** ActiveRecordSchema depends on `rails ~> 3.0` and not only `ActiveRecord`
 
 ## Usage
 
@@ -38,11 +38,11 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Running `rails g migration` with `--from` option like this:
+Now run `rails g migration` with `--from` option like this:
 
     rails g migration init_posts_schema --from Post
   
-Will generate the following migration
+To generate the following migration
 
 ``` rb    
 class InitPostsSchema < ActiveRecord::Migration
@@ -56,24 +56,23 @@ class InitPostsSchema < ActiveRecord::Migration
 end
 ```
 
-Now you can migrate the database.
-
-Later in the life cycle of the project... add a new field to `Post`
+Generating a migration for new columns is the same, lets add a new field to `Post` (eg. `pubdate`):
 
 ``` rb    
 class Post < ActiveRecord::Base
     field :title
     field :body, :as => :text
     belongs_to :author, :class_name => "User"
+    
     field :pubdate, :as => :datetime
 end
 ```
 
-Generating a migration for new columns is the same:
+Now run
 
     rails g migration add_pubdate_to_posts --from Post
 
-This will generate:
+and this will generate:
 
 ``` rb
 class AddPubdateToPosts < ActiveRecord::Migration
@@ -165,7 +164,7 @@ same as
 
     rails g migration init_contents --from Video
     
-Will generate the following migration 
+will generate the following migration 
 
 ``` rb
 class InitContents < ActiveRecord::Migration
@@ -191,7 +190,7 @@ end
 
 ## Mixins
 
-Probably one of the most significant advantage offered by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixin
+Probably one of the most significant advantage given by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixin
 
 _ex._
 
@@ -217,21 +216,17 @@ end
 ```
 
 
-## DSL (Domain Specific Language) for schema definition
-
+## DSL (Domain Specific Language) reference
 
 
 ### `field(name, *args)`
 
-Define a new column with name `name`. The type of column can be passed either as second argument or as option, if not specified is intended to be `:string`
+Adds a new column with name `name` to the schema. The type of column can be passed either as second argument or as option, if not specified is intended to be `:string`
 
 #### options  
 
-as _or_ type
-:      Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
-
-index
-:     Specify wether or not the field should be indexed, default to `false`
+* **:as _or_ :type** : Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
+* **:index** : Specify wether or not the field should be indexed, default to `false`
 
 #### examples
 
@@ -253,75 +248,44 @@ field :name, :type => String
 field :age, :as => :integer, :index => true
 ```
 
+### `belongs_to(name, options = {})`
 
-       def field(name, *args)
-         options    = args.extract_options!
-         type       = options.delete(:as) || options.delete(:type) || args.first || :string
-         type       = type.name.underscore.to_sym if (type.class == Class) 
-         index      = options.delete(:index)
+Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polimorphic a column for foreign type is also generated.
+
+#### options  
+
+* **:index** : Specify wether or not the foreing key column should be indexed, default to `true`. If the association is polimorphic creates an index on both foreign key and foreing type
+
+
+### `has_and_belongs_to_many(name, options = {}, &extension)`
+
+Adds a new join table for the association to the schema and then delegates to `ActiveRecord::Base.has_and_belongs_to_many`
+
+### `index(column_name, options = {})`
+
+Adds a new index for `column_name` column to the schema
+
+
+### `timestamps`
+
+Same as
+
+``` rb
+field :created_at, :datetime
+field :updated_at, :datetime
+```
+
+### `inheritable`
   
-         schema.add_field(name, type, options)
+Same as
 
-         if index
-           schema.add_index(name)
-         end       
-       end
-    
-       def belongs_to(name, options = {})
-         options.symbolize_keys!
-         skip_index = options.delete(:index) == false
-      
-         foreign_key  = options[:foreign_key] || "#{name}_id"
-         field :"#{foreign_key}"
-      
-         if options[:polimorphic]
-           foreign_type = options[:foreign_type] || "#{name}_type"
-           field :"#{foreign_type}"
-           add_index [:"#{foreign_key}", :"#{foreign_type}"] if !skip_index
-         else
-           add_index :"#{foreign_key}" if !skip_index
-         end
-      
-         super(name, options)
-       end
-    
-       def has_and_belongs_to_many(name, options = {}, &extension)
-         options.symbolize_keys!
+``` rb
+field :"#{inheritance_column}"
+```
 
-         self_class_name = self.name
-         association_class_name = options[:class_name] || "#{name}".singularize.camelize
+## Why not also generate irreversible changes (change/remove columns or indexes)?
 
-         table = options[:join_table] || [self_class_name, association_class_name].sort.map(&:tableize).join("_")
-         key1  = options[:foreign_key] || "#{self_class_name.underscore}_id"
-         key2  = options[:association_foreign_key] || "#{association_class_name.underscore}_id"
-         skip_index = options.delete(:index) == false
-
-         schema.add_join(table, key1, key2, !skip_index)
-         super(name, options, &extension)
-       end
-            
-       def index(column_name, options = {})
-         schema.add_index(column_name, options)
-       end
-      
-       def timestamps
-         field :created_at, :datetime
-         field :updated_at, :datetime
-       end
-     
-       def inheritable
-         field :"#{inheritance_column}"
-       end
-     
-
-
-    
-## Migrating from other ORMs
-
-
-
-
-## Why not also generate irreversible changes (change/remove columns)?
+ActiveRecordSchema does not take into account the removal of columns and indexes or changes in the types of columns. The reason for this is that these changes are not reversible, so it's a better idea to introduce them by hand rather than let them be generated automatically. Anyway the need to resort to harsh measures such as irreversible changes is limited to non-routine situations.
 
 ## Contributing to active_record_schema
  
