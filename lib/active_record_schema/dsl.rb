@@ -17,7 +17,7 @@ module ActiveRecordSchema
        # field :name, :string, :default => "Joe"      
        def field(name, *args)
          options    = args.extract_options!
-         type       =  options.delete(:as) || options.delete(:type) || args.first || :string
+         type       = options.delete(:as) || options.delete(:type) || args.first || :string
          type       = type.name.underscore.to_sym if (type.class == Class) 
          index      = options.delete(:index)
   
@@ -27,9 +27,6 @@ module ActiveRecordSchema
            schema.add_index(name)
          end       
        end
-       alias :key       :field
-       alias :property  :field
-       alias :col       :field
     
        def belongs_to(name, options = {})
          options.symbolize_keys!
@@ -64,21 +61,18 @@ module ActiveRecordSchema
          super(name, options, &extension)
        end
             
-       def add_index(column_name, options = {})
+       def index(column_name, options = {})
          schema.add_index(column_name, options)
        end
-       alias :index :add_index
       
-       def timestamps!
+       def timestamps
          field :created_at, :datetime
          field :updated_at, :datetime
        end
-       alias :timestamps :timestamps!
      
-       def inheritable!
+       def inheritable
          field :"#{inheritance_column}"
        end
-       alias :inheritable :inheritable!
      
     end
 

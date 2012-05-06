@@ -13,8 +13,6 @@ Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternativ
    * Join table for `has_and_belongs_to_many`
   
 * Automatic indexing of foreign keys for both `belongs_to` and `has_and_belongs_to_many` (configurable)
-* Impact zero in production
-
 
 ## Installation
 
@@ -25,10 +23,12 @@ Put this in your Gemfile
 Update your bundle
   
     bundle install
+    
+**NOTE** - ActiveRecordSchema depends on `rails ~> 3.0` and not only `ActiveRecord`
 
 ## Usage
 
-Create a model
+Create a model and use the class method `#field` to define columns
 
 ``` rb    
 class Post < ActiveRecord::Base
@@ -38,7 +38,7 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Run a migration generator each time you want to commit changes to database
+Running `rails g migration` with `--from` option like this:
 
     rails g migration init_posts_schema --from Post
   
@@ -69,11 +69,11 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Generate easily a new migration for the change:
+Generating a migration for new columns is the same:
 
     rails g migration add_pubdate_to_posts --from Post
 
-Will generate:
+This will generate:
 
 ``` rb
 class AddPubdateToPosts < ActiveRecord::Migration
@@ -215,6 +215,106 @@ class Player < ActiveRecord::Base
       
 end
 ```
+
+
+## DSL (Domain Specific Language) for schema definition
+
+
+
+### `field(name, *args)`
+
+Define a new column with name `name`. The type of column can be passed either as second argument or as option, if not specified is intended to be `:string`
+
+#### options  
+
+as _or_ type
+:      Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
+
+index
+:     Specify wether or not the field should be indexed, default to `false`
+
+#### examples
+
+``` rb
+field :name
+
+field :name, :string
+field :name, "string"
+field :name, String
+
+field :name, :as => :string
+field :name, :as => "string"
+field :name, :as => String
+
+field :name, :type => :string
+field :name, :type => "string"
+field :name, :type => String
+
+field :age, :as => :integer, :index => true
+```
+
+
+       def field(name, *args)
+         options    = args.extract_options!
+         type       = options.delete(:as) || options.delete(:type) || args.first || :string
+         type       = type.name.underscore.to_sym if (type.class == Class) 
+         index      = options.delete(:index)
+  
+         schema.add_field(name, type, options)
+
+         if index
+           schema.add_index(name)
+         end       
+       end
+    
+       def belongs_to(name, options = {})
+         options.symbolize_keys!
+         skip_index = options.delete(:index) == false
+      
+         foreign_key  = options[:foreign_key] || "#{name}_id"
+         field :"#{foreign_key}"
+      
+         if options[:polimorphic]
+           foreign_type = options[:foreign_type] || "#{name}_type"
+           field :"#{foreign_type}"
+           add_index [:"#{foreign_key}", :"#{foreign_type}"] if !skip_index
+         else
+           add_index :"#{foreign_key}" if !skip_index
+         end
+      
+         super(name, options)
+       end
+    
+       def has_and_belongs_to_many(name, options = {}, &extension)
+         options.symbolize_keys!
+
+         self_class_name = self.name
+         association_class_name = options[:class_name] || "#{name}".singularize.camelize
+
+         table = options[:join_table] || [self_class_name, association_class_name].sort.map(&:tableize).join("_")
+         key1  = options[:foreign_key] || "#{self_class_name.underscore}_id"
+         key2  = options[:association_foreign_key] || "#{association_class_name.underscore}_id"
+         skip_index = options.delete(:index) == false
+
+         schema.add_join(table, key1, key2, !skip_index)
+         super(name, options, &extension)
+       end
+            
+       def index(column_name, options = {})
+         schema.add_index(column_name, options)
+       end
+      
+       def timestamps
+         field :created_at, :datetime
+         field :updated_at, :datetime
+       end
+     
+       def inheritable
+         field :"#{inheritance_column}"
+       end
+     
+
+
     
 ## Migrating from other ORMs
 
