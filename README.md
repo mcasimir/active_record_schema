@@ -38,11 +38,11 @@ class Post < ActiveRecord::Base
 end
 ```
 
-Now run `rails g migration` with `--from` option like this:
+Now run `rails g migration` with `--from` option
 
     rails g migration init_posts_schema --from Post
   
-To generate the following migration
+and the following migration will be generated
 
 ``` rb    
 class InitPostsSchema < ActiveRecord::Migration
@@ -72,7 +72,7 @@ Now run
 
     rails g migration add_pubdate_to_posts --from Post
 
-and this will generate:
+that will generate:
 
 ``` rb
 class AddPubdateToPosts < ActiveRecord::Migration
