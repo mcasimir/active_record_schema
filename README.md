@@ -122,7 +122,7 @@ will generate:
 
 ## Single Table Inheritance (STI)
 
-Call `#inheritable` inside the base class of your hierarchy to add the `type` column required by Single Table Inheritance.
+Call `#inheritable` inside the base class of your hierarchy to add the inheritance column required by Single Table Inheritance.
 
 _ex._
 
@@ -248,6 +248,7 @@ field :name, :type => String
 field :age, :as => :integer, :index => true
 ```
 
+
 ### `belongs_to(name, options = {})`
 
 Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polimorphic a column for foreign type is also generated.
@@ -264,6 +265,7 @@ Adds a new join table for the association to the schema and then delegates to `A
 ### `index(column_name, options = {})`
 
 Adds a new index for `column_name` column to the schema
+
 
 
 ### `timestamps`
@@ -283,9 +285,11 @@ Same as
 field :"#{inheritance_column}"
 ```
 
+
 ## Why not also generate irreversible changes (change/remove columns or indexes)?
 
 ActiveRecordSchema does not take into account the removal of columns and indexes or changes in the types of columns. The reason for this is that these changes are not reversible, so it's a better idea to introduce them by hand rather than let them be generated automatically. Anyway the need to resort to harsh measures such as irreversible changes is limited to non-routine situations.
+
 
 ## Contributing to active_record_schema
  
