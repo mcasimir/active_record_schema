@@ -2,11 +2,11 @@
 
 *ActiveRecordSchema* is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models.
 
-Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use enhancing their positive sides and contrasting their defects.
+Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.
 
 Install
 
-    gem 'active_record_schema', :git => "git@github.com:mcasimir/active_record_schema.git"
+    gem 'active_record_schema'
     
 Update your bundle
   
@@ -17,13 +17,9 @@ Update your bundle
 Create a model
     
     class Post < ActiveRecord::Base
-      schema do
-
         field :title
         field :body, :as => :text
         belongs_to :author, :class_name => "User"
-
-      end
     end
 
 Run a migration generator each time you want to commit changes to database
@@ -42,34 +38,128 @@ Will generate the following migration
       end
     end
 
+Now you can migrate the database.
+
+Later in the life cycle of the project... add a new field to `Post`
+    
+    class Post < ActiveRecord::Base
+        field :title
+        field :body, :as => :text
+        belongs_to :author, :class_name => "User"
+        field :pubdate, :as => :datetime
+    end
+
+Generate easily a new migration for the change:
+
+    rails g migration add_pubdate_to_posts --from Post
+
+Will generate:
+
+    class AddPubdateToPosts < ActiveRecord::Migration
+      def change
+        add_column :posts, :pubdate, :datetime
+      end
+    end
+
+
+## Has and Belongs To Many (HBTM) associations
+
+Lets try to add a HBTM association to our `Post` model
+
+_ex._
+
+    # content.rb
+    class Post < ActiveRecord::Base
+      field :title
+      field :body, :as => :text
+      belongs_to :author, :class_name => "User"
+      field :pubdate, :as => :datetime
+
+      has_and_belongs_to_many :voters, :class_name => "User"
+    end
+
+
+Now running
+
+    rails g migration add_voters_to_posts --from Post
+
+Will generate:
+
+    class AddVotersToPosts < ActiveRecord::Migration
+      def change
+        create_table :contents_users, :id => false do |t|
+          t.integer  "content_id"
+          t.integer  "user_id"
+        end
+        add_index :contents_users, "content_id"
+        add_index :contents_users, "user_id"
+      end
+    end
 
 ## Single Table Inheritance (STI)
+
+Call `#inheritable` inside the base class of your hierarchy to add the `type` column required by Single Table Inheritance.
 
 _ex._
 
     # content.rb
     class Content < ActiveRecord::Base
-      schema(:inheritable => true) do
-        field :title
+      inheritable
+  
+      field :title
+  
+      has_and_belongs_to_many :voters, :class_name => "User"
+      belongs_to              :author, :class_name => "User"
     
-        timestamps!
-      end
+      timestamps
     end
+    
   
     # article.rb
     class Article < Content
-      schema do
-        field :body, :as => :text
-      end
+      field :body, :as => :text
     end
+    
   
     # video.rb
     class Video < Content
-      schema do
-        field :url
-      end
+      field :url
     end
-  
+
+run
+    
+    rails g migration init_contents --from Content
+
+same as
+
+    rails g migration init_contents --from Article
+    
+same as
+
+    rails g migration init_contents --from Video
+    
+Will generate the following migration 
+
+    class InitContents < ActiveRecord::Migration
+      def change
+        add_column :contents, :type, :string
+        add_column :contents, :title, :string
+        add_column :contents, :author_id, :string
+        add_column :contents, :body, :text
+        add_column :contents, :url, :string
+
+        add_index :contents, :author_id
+
+        create_table :contents_users, :id => false do |t|
+          t.integer  "content_id"
+          t.integer  "user_id"
+        end
+        add_index :contents_users, "content_id"
+        add_index :contents_users, "user_id"
+      end  
+    end
+
+
 
 ## Contributing to active_record_schema
  
@@ -81,9 +171,6 @@ _ex._
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
-## Coming Soon
-
-* Automatically generate migrations for Join tables for HBTM
 
 ---
 
