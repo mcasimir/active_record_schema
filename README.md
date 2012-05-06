@@ -248,44 +248,42 @@ end
     ```
 
 
-### `belongs_to(name, options = {})`
+  * ### `belongs_to(name, options = {})`
 
-Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polimorphic a column for foreign type is also generated.
+    Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polimorphic a column for foreign type is also generated.
 
-#### options  
+    #### options  
 
-* **:index** : Specify wether or not the foreing key column should be indexed, default to `true`. If the association is polimorphic creates an index on both foreign key and foreing type
-
-
-### `has_and_belongs_to_many(name, options = {}, &extension)`
-
-Adds a new join table for the association to the schema and then delegates to `ActiveRecord::Base.has_and_belongs_to_many`
-
-### `index(column_name, options = {})`
-
-Adds a new index for `column_name` column to the schema
+    * **:index** : Specify wether or not the foreing key column should be indexed, default to `true`. If the association is polimorphic creates an index on both foreign key and foreing type
 
 
+  * ### `has_and_belongs_to_many(name, options = {}, &extension)`
 
-### `timestamps`
+    Adds a new join table for the association to the schema and then delegates to `ActiveRecord::Base.has_and_belongs_to_many`
 
-Same as
+  * ### `index(column_name, options = {})`
 
-``` rb
-field :created_at, :datetime
-field :updated_at, :datetime
-```
+    Adds a new index for `column_name` column to the schema
 
-### `inheritable`
+  * ### `timestamps`
+
+    Same as
+
+    ``` rb
+    field :created_at, :datetime
+    field :updated_at, :datetime
+    ```
+
+  * ### `inheritable`
   
-Same as
+    Same as
 
-``` rb
-field :"#{inheritance_column}"
-```
+    ``` rb
+    field :"#{inheritance_column}"
+    ```
 
 
-## Why not also generate irreversible changes (change/remove columns or indexes)?
+## Why do not also generate irreversible changes (change/remove columns or indexes)?
 
 ActiveRecordSchema does not take into account the removal of columns and indexes or changes in the types of columns. The reason for this is that these changes are not reversible, so it's a better idea to introduce them by hand rather than let them be generated automatically. Anyway the need to resort to harsh measures such as irreversible changes is limited to non-routine situations.
 
