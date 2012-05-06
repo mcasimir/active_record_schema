@@ -218,35 +218,34 @@ end
 
 ## DSL (Domain Specific Language) reference
 
+  * ### `field(name, *args)`
 
-### `field(name, *args)`
+    Adds a new column with name `name` to the schema. The type of column can be passed either as second argument or as option, if not specified is intended to be `:string`
 
-Adds a new column with name `name` to the schema. The type of column can be passed either as second argument or as option, if not specified is intended to be `:string`
+    #### options  
 
-#### options  
+    * **:as _or_ :type** : Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
+    * **:index** : Specify wether or not the field should be indexed, default to `false`
 
-* **:as _or_ :type** : Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
-* **:index** : Specify wether or not the field should be indexed, default to `false`
+    #### examples
 
-#### examples
+    ``` rb
+    field :name
 
-``` rb
-field :name
+    field :name, :string
+    field :name, "string"
+    field :name, String
 
-field :name, :string
-field :name, "string"
-field :name, String
+    field :name, :as => :string
+    field :name, :as => "string"
+    field :name, :as => String
 
-field :name, :as => :string
-field :name, :as => "string"
-field :name, :as => String
+    field :name, :type => :string
+    field :name, :type => "string"
+    field :name, :type => String
 
-field :name, :type => :string
-field :name, :type => "string"
-field :name, :type => String
-
-field :age, :as => :integer, :index => true
-```
+    field :age, :as => :integer, :index => true
+    ```
 
 
 ### `belongs_to(name, options = {})`
