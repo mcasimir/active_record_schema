@@ -8,12 +8,17 @@ module  ActiveRecordSchema
     end
     
     def _diff_fields_add
-      model.schema.fields.values.delete_if {|f| _column_names.include?(f.name.to_s) }
+      model.schema.fields.values.delete_if {|field| _column_names.include?(field.name.to_s) }
     end
 
     def _diff_indexes_add
-      model.schema.indexes.values.delete_if {|f| _index_names.include?(f.name.to_s) }
+      model.schema.indexes.values.delete_if {|index| _index_names.include?(index.name.to_s) }
     end
+
+    def _diff_joins_add
+      model.schema.joins.values.delete_if {|join| _table_names.include?(join.table.to_s) }
+    end
+    
 
     def _connection
       ActiveRecord::Base.connection
@@ -29,6 +34,10 @@ module  ActiveRecordSchema
     
     def _index_names
       _connection.indexes(_table).map(&:name)      
+    end
+    
+    def _table_names
+      _connection.tables
     end
 
   end
