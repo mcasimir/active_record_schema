@@ -114,7 +114,7 @@ Lets try to add a HBTM association to our `Post` model
 _ex._
 
 ``` rb
-# content.rb
+# post.rb
 class Post < ActiveRecord::Base
   field :title
   field :body, :as => :text
@@ -135,12 +135,12 @@ will generate:
 ``` rb
     class AddVotersToPosts < ActiveRecord::Migration
       def change
-        create_table :contents_users, :id => false do |t|
+        create_table :posts_users, :id => false do |t|
           t.integer  "content_id"
           t.integer  "user_id"
         end
-        add_index :contents_users, "content_id"
-        add_index :contents_users, "user_id"
+        add_index :posts_users, "content_id"
+        add_index :posts_users, "user_id"
       end
     end
 ```
