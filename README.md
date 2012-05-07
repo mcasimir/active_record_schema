@@ -136,7 +136,7 @@ will generate:
     class AddVotersToPosts < ActiveRecord::Migration
       def change
         create_table :posts_users, :id => false do |t|
-          t.integer  "content_id"
+          t.integer  "post_id"
           t.integer  "user_id"
         end
         add_index :posts_users, "content_id"
