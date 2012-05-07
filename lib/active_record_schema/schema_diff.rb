@@ -11,8 +11,6 @@ module  ActiveRecordSchema
       _table_exists?
     end
     
-    private
-    
     def _diff_fields_add
       model.schema.fields.values.delete_if {|field| _column_names.include?(field.name.to_s) }
     end
