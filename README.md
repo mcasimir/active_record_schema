@@ -31,10 +31,10 @@ and update your bundle
 In order to correctly solve the required fields for the inheritance ActiveRecordSchema requires that all classes of models are loaded in memory when generating migration. This is done by pre-loading models in the generator. To figure out which file to load ARS refers to the global configuration property in `ActiveRecordSchema.config.autoload_paths` that is set by default to:
 
 ``` rb
-    [
-       Rails.root.join('app', 'models', '*.rb'),
-       Rails.root.join('app', 'models', '**', '*.rb') 
-    ]
+[
+   Rails.root.join('app', 'models', '*.rb'),
+   Rails.root.join('app', 'models', '**', '*.rb') 
+]
 ```
 
 You can change this by creating an initializer and setting or appending new paths to `ActiveRecordSchema.config.autoload_paths`
@@ -249,7 +249,7 @@ end
 
     #### options  
 
-    * **:as _or_ :type** : Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
+    * **:as** _or_ **:type** : Specify the type of the column. The value can be a `String`, a `Symbol` or a `Class`, default to `:string`
     * **:index** : Specify wether or not the field should be indexed, default to `false`
 
     #### examples
