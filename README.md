@@ -215,7 +215,7 @@ end
 
 ## Mixins
 
-Probably one of the most significant advantage given by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixin
+Probably one of the most significant advantage given by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixins
 
 _ex._
 
