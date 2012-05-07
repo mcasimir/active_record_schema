@@ -20,7 +20,7 @@ module  ActiveRecordSchema
     end
 
     def _diff_indexes_add
-      model.schema.indexes.values.delete_if {|index| _index_names.include?(index.name.to_s) }
+      model.schema.indexes.values.delete_if {|index| _index_exists?(index.name) }
     end
 
     def _diff_joins_add
@@ -39,16 +39,16 @@ module  ActiveRecordSchema
       _table_exists? ? _connection.columns(_table).map(&:name) : []
     end
     
-    def _index_names
-      _table_exists? ? _connection.indexes(_table).map(&:name) : []
-    end
-    
     def _table_names
       _connection.tables
     end
     
     def _table_exists?
       _connection.table_exists?(_table)
+    end
+    
+    def _index_exists?(columns)
+      _connection.index_exists?(_table, columns)      
     end
 
   end
