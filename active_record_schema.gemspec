@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_record_schema"
-  s.version = "0.2.2"
+  s.version = "0.2.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["mcasimir"]
-  s.date = "2012-05-06"
+  s.date = "2012-05-07"
   s.description = "ActiveRecordSchema is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models."
   s.email = "maurizio.cas@gmail.com"
   s.extra_rdoc_files = [
