@@ -7,6 +7,10 @@ module  ActiveRecordSchema
       self.respond_to?(diff_method) ? self.send(diff_method) : []
     end
     
+    def nothing_to_do?
+      table_exists? && diff(:fields, :add).empty? && diff(:indexes, :add).empty? && diff(:joins, :add).empty? 
+    end
+    
     def table_exists?
       _table_exists?
     end
@@ -23,7 +27,6 @@ module  ActiveRecordSchema
       model.schema.joins.values.delete_if {|join| _table_names.include?(join.table.to_s) }
     end
     
-
     def _connection
       ActiveRecord::Base.connection
     end

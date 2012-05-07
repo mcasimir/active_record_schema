@@ -47,6 +47,7 @@ and the following migration will be generated
 ``` rb    
 class InitPostsSchema < ActiveRecord::Migration
   def change
+    create_table :posts 
     add_column :posts, :title, :string
     add_column :posts, :body, :text
 
@@ -55,6 +56,8 @@ class InitPostsSchema < ActiveRecord::Migration
   end
 end
 ```
+
+**NOTE:** `create_table :posts` is added only if `posts` table does not exist yet
 
 Generating a migration for new columns is the same, lets add a new field to `Post` (eg. `pubdate`):
 
@@ -81,6 +84,8 @@ class AddPubdateToPosts < ActiveRecord::Migration
   end
 end
 ```
+
+**NOTE:** No migration will be generated in case all changes are up-to-date 
 
 ## Has and Belongs To Many (HBTM) associations
 
