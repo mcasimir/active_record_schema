@@ -26,6 +26,19 @@ and update your bundle
     
 **NOTE:** ActiveRecordSchema depends on `rails ~> 3.0` and not only `ActiveRecord`
 
+## Configuration
+
+In order to correctly solve the required fields for the inheritance ActiveRecordSchema requires that all classes of models are loaded in memory when generating migration. This is done by pre-loading models in the generator. To figure out which file to load ARS refers to the global configuration property in `ActiveRecordSchema.config.autoload_paths` that is set by default to:
+
+``` rb
+    [
+       Rails.root.join('app', 'models', '*.rb'),
+       Rails.root.join('app', 'models', '**', '*.rb') 
+    ]
+```
+
+You can change this by creating an initializer and setting or appending new paths to `ActiveRecordSchema.config.autoload_paths`
+
 ## Usage
 
 Create a model and use the class method `#field` to define columns
