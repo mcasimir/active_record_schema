@@ -39,6 +39,13 @@ In order to correctly solve the required fields for the inheritance ActiveRecord
 
 You can change this by creating an initializer and setting or appending new paths to `ActiveRecordSchema.config.autoload_paths`
 
+
+``` rb
+# active_record_schema_initializer.rb
+ActiveRecordSchema.config.autoload_paths << Rails.root.join('lib', 'models', '*.rb')
+```
+
+
 ## Usage
 
 Create a model and use the class method `#field` to define columns
