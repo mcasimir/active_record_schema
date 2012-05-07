@@ -64,6 +64,7 @@ module ActiveRecordSchema
        def index(column_name, options = {})
          schema.add_index(column_name, options)
        end
+       alias :add_index :index
       
        def timestamps
          field :created_at, :datetime
