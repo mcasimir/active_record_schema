@@ -7,6 +7,12 @@ module  ActiveRecordSchema
       self.respond_to?(diff_method) ? self.send(diff_method) : []
     end
     
+    def table_exists?
+      _table_exists?
+    end
+    
+    private
+    
     def _diff_fields_add
       model.schema.fields.values.delete_if {|field| _column_names.include?(field.name.to_s) }
     end
@@ -29,15 +35,19 @@ module  ActiveRecordSchema
     end
     
     def _column_names
-      _connection.columns(_table).map(&:name)
+      _table_exists? ? _connection.columns(_table).map(&:name) : []
     end
     
     def _index_names
-      _connection.indexes(_table).map(&:name)      
+      _table_exists? ? _connection.indexes(_table).map(&:name) : []
     end
     
     def _table_names
       _connection.tables
+    end
+    
+    def _table_exists?
+      _connection.table_exists?(_table)
     end
 
   end
