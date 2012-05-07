@@ -264,6 +264,10 @@ end
   * ### `index(column_name, options = {})`
 
     Adds a new index for `column_name` column to the schema
+    
+  * ### `add_index(column_name, options = {})`
+
+    alias for `index`
 
   * ### `timestamps`
 
