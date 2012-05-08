@@ -275,11 +275,11 @@ end
 
   * ### `belongs_to(name, options = {})`
 
-    Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polimorphic a column for foreign type is also generated.
+    Adds a new foreign key column for the association to the schema and then delegates to `ActiveRecord::Base.belongs_to`. If the association is polymorphic a column for foreign type is also generated.
 
     #### options  
 
-    * **:index** : Specify wether or not the foreing key column should be indexed, default to `true`. If the association is polimorphic creates an index on both foreign key and foreing type
+    * **:index** : Specify wether or not the foreing key column should be indexed, default to `true`. If the association is polymorphic creates an index on both foreign key and foreing type
 
 
   * ### `has_and_belongs_to_many(name, options = {}, &extension)`

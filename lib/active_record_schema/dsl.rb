@@ -35,7 +35,7 @@ module ActiveRecordSchema
          foreign_key  = options[:foreign_key] || "#{name}_id"
          field :"#{foreign_key}"
       
-         if options[:polimorphic]
+         if options[:polymorphic]
            foreign_type = options[:foreign_type] || "#{name}_type"
            field :"#{foreign_type}"
            add_index [:"#{foreign_key}", :"#{foreign_type}"] if !skip_index
