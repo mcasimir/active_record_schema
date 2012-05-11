@@ -196,7 +196,7 @@ class InitContents < ActiveRecord::Migration
   def change
     add_column :contents, :type, :string
     add_column :contents, :title, :string
-    add_column :contents, :author_id, :string
+    add_column :contents, :author_id, :integer
     add_column :contents, :body, :text
     add_column :contents, :url, :string
 
