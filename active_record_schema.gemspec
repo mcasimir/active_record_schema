@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = "active_record_schema"
-  s.version = "0.3.4"
+  s.name = %q{active_record_schema}
+  s.version = "0.3.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["mcasimir"]
-  s.date = "2012-05-08"
-  s.description = "ActiveRecordSchema is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models."
-  s.email = "maurizio.cas@gmail.com"
+  s.authors = [%q{mcasimir}]
+  s.date = %q{2012-05-11}
+  s.description = %q{ActiveRecordSchema is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models.}
+  s.email = %q{maurizio.cas@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.md"
@@ -39,11 +39,11 @@ Gem::Specification.new do |s|
     "lib/generators/active_record_schema/migration/templates/migration_from_model.rb.erb",
     "lib/generators/active_record_schema/model/model_generator.rb"
   ]
-  s.homepage = "http://github.com/mcasimir/active_record_schema"
-  s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.24"
-  s.summary = "ActiveRecord extension allowing to write schema in models and to generate migrations from models"
+  s.homepage = %q{http://github.com/mcasimir/active_record_schema}
+  s.licenses = [%q{MIT}]
+  s.require_paths = [%q{lib}]
+  s.rubygems_version = %q{1.8.5}
+  s.summary = %q{ActiveRecord extension allowing to write schema in models and to generate migrations from models}
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
