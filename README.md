@@ -1,8 +1,28 @@
 # ActiveRecordSchema
 
-**ActiveRecordSchema** is an `ActiveRecord` extension that allows you to write database schema for a model within the model itself and to generate migrations directly from models.
+**ActiveRecordSchema** is an `ActiveRecord` extension that allows you to define fields for a model within the model itself and to generate migrations directly from models.
 
 Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.
+
+_ex._
+
+```
+rails g model Post title:string body:text --timestamps
+```
+
+``` rb
+class Post < ActiveRecord::Base
+    field :title, :string
+    field :body, :text
+    
+    attr_accessible :date, :name
+    timestamps
+end
+```
+
+```
+rails g migration create_posts --from Post
+```
 
 ## Features
 
@@ -196,7 +216,7 @@ class InitContents < ActiveRecord::Migration
   def change
     add_column :contents, :type, :string
     add_column :contents, :title, :string
-    add_column :contents, :author_id, :integer
+    add_column :contents, :author_id, :string
     add_column :contents, :body, :text
     add_column :contents, :url, :string
 
@@ -311,6 +331,26 @@ end
     field :"#{inheritance_column}"
     ```
 
+
+## Generators
+
+### `rails g model`
+
+``` 
+      [--inheritable]          # Add 'inheritable' to the generated model
+      [--timestamps]           # Add 'timestamps' to the generated model
+      [--scope=SCOPE]          # The subpath of app/models in which model file will be created
+      [--parent=PARENT]        # The parent class for the generated model
+  -t, [--test-framework=NAME]  # Test framework to be invoked
+                               # Default: test_unit
+```
+
+### `rails g migration`
+
+```
+  [--from=FROM]  # calculates the changes to be applied on model table from the schema defined inside the model itself
+  [--id=N]       # The id to be used in this migration
+```
 
 ## Why do not also generate irreversible changes (change/remove columns or indexes)?
 

@@ -33,7 +33,7 @@ module ActiveRecordSchema
          skip_index = options.delete(:index) == false
       
          foreign_key  = options[:foreign_key] || "#{name}_id"
-         field :"#{foreign_key}", :integer
+         field :"#{foreign_key}"
       
          if options[:polymorphic]
            foreign_type = options[:foreign_type] || "#{name}_type"

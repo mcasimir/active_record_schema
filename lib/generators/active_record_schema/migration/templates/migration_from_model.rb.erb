@@ -1,15 +1,15 @@
 class <%= migration_class_name %> < ActiveRecord::Migration
   def change
 <%- if !model.schema.table_exists? -%>
-    create_table :<%= model.table_name %>
+    create_table :<%= model.schema.prefixed_table_name %>
 
 <%- end -%>
 <%- model.schema.diff(:fields, :add).each do |field| -%>
-    add_column :<%= model.table_name %>, <%= field.name.inspect %>, <%= field.type.inspect %><%= ", #{field.options.inspect}" if !field.options.blank? %>
+    add_column :<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>, <%= field.type.inspect %><%= ", #{field.options.inspect}" if !field.options.blank? %>
 <%- end -%>
 
 <%- model.schema.diff(:indexes, :add).each do |index| -%>
-    add_index :<%= model.table_name %>, <%= index.name.inspect %><%= ", #{index.options.inspect}" if !index.options.blank? %>
+    add_index :<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %><%= ", #{index.options.inspect}" if !index.options.blank? %>
 <%- end -%>
 
 <%- model.schema.diff(:joins, :add).each do |join| -%>

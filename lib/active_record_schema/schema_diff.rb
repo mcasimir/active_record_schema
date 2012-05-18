@@ -15,6 +15,10 @@ module  ActiveRecordSchema
       _table_exists?
     end
     
+    def prefixed_table_name
+      _table
+    end
+    
     def _diff_fields_add
       model.schema.fields.values.delete_if {|field| _column_names.include?(field.name.to_s) }
     end
@@ -32,6 +36,7 @@ module  ActiveRecordSchema
     end
     
     def _table
+      # prefix = model.parents.find {|p| p.respond_to?(:table_name_prefix)}.try(:table_name_prefix)
       model.table_name
     end
     

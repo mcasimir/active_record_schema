@@ -15,11 +15,7 @@ module ActiveRecordSchema
            ActiveRecordSchema.autoload_paths.each do |p|
              load(p)
            end
-           if model.schema.nothing_to_do?
-             say "Nothing to do for '#{options[:from]}'"
-           else
-             migration_template "migration_from_model.rb.erb", "db/migrate/#{file_name}.rb"          
-           end
+           migration_template "migration_from_model.rb.erb", "db/migrate/#{file_name}.rb"          
          else
            migration_template "migration.rb", "db/migrate/#{file_name}.rb"
          end
