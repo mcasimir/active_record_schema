@@ -2,7 +2,7 @@
 
 **ActiveRecordSchema** is an `ActiveRecord` extension that allows you to define fields for a model within the model itself and to generate migrations directly from models.
 
-Unlike other libraries (eg. mini_record) ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.
+Unlike other libraries ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.
 
 _ex._
 
