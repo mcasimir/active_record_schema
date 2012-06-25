@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="ActiveRecord Schema : A ruby gem for Rails that extends ActiveRecord with the capability to define fields for a model within the model itself and to generate migrations directly from models." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>ActiveRecord Schema</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/mcasimir/active_record_schema">View on GitHub</a>
+
+          <h1 id="project_title">ActiveRecord Schema</h1>
+          <h2 id="project_tagline">A ruby gem for Rails that extends ActiveRecord with the capability to define fields for a model within the model itself and to generate migrations directly from models.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/mcasimir/active_record_schema/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/mcasimir/active_record_schema/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>ActiveRecordSchema</h1>
+
+<p><strong>ActiveRecordSchema</strong> is an <code>ActiveRecord</code> extension that allows you to define fields for a model within the model itself and to generate migrations directly from models.</p>
+
+<p>Unlike other libraries ActiveRecordSchema is not an alternative to Rails migrations, but rather a tool to simplify their use.</p>
+
+<p><em>ex.</em></p>
+
+<pre><code>rails g model Post title:string body:text --timestamps
+</code></pre>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">field</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:text</span>
+
+    <span class="n">attr_accessible</span> <span class="ss">:date</span><span class="p">,</span> <span class="ss">:name</span>
+    <span class="n">timestamps</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<pre><code>rails g migration create_posts --from Post
+</code></pre>
+
+<h2>Features</h2>
+
+<ul>
+<li>Defining columns and indexes directly in model</li>
+<li>Generation of migration from the model taking into account the current state of the database</li>
+<li>
+<p>Automatically add code to migrate associations:</p>
+
+<ul>
+<li>Foreign key for <code>belongs_to</code>
+</li>
+<li>Join table for <code>has_and_belongs_to_many</code>
+</li>
+</ul>
+</li>
+<li><p>Automatic indexing of foreign keys for both <code>belongs_to</code> and <code>has_and_belongs_to_many</code> (configurable)</p></li>
+</ul><h2>Installation</h2>
+
+<p>Put this in your Gemfile</p>
+
+<pre><code>gem 'active_record_schema'
+</code></pre>
+
+<p>and update your bundle</p>
+
+<pre><code>bundle install
+</code></pre>
+
+<p><strong>NOTE:</strong> ActiveRecordSchema depends on <code>rails ~&gt; 3.0</code> and not only <code>ActiveRecord</code></p>
+
+<h2>Configuration</h2>
+
+<p>In order to correctly solve the required fields for the inheritance ActiveRecordSchema requires that all classes of models are loaded in memory when generating migration. This is done by pre-loading models in the generator. To figure out which file to load ARS refers to the global configuration property in <code>ActiveRecordSchema.config.autoload_paths</code> that is set by default to:</p>
+
+<div class="highlight">
+<pre><span class="o">[</span>
+   <span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="s1">'models'</span><span class="p">,</span> <span class="s1">'*.rb'</span><span class="p">),</span>
+   <span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'app'</span><span class="p">,</span> <span class="s1">'models'</span><span class="p">,</span> <span class="s1">'**'</span><span class="p">,</span> <span class="s1">'*.rb'</span><span class="p">)</span> 
+<span class="o">]</span>
+</pre>
+</div>
+
+
+<p>You can change this by creating an initializer and setting or appending new paths to <code>ActiveRecordSchema.config.autoload_paths</code></p>
+
+<div class="highlight">
+<pre><span class="c1"># active_record_schema_initializer.rb</span>
+<span class="no">ActiveRecordSchema</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">autoload_paths</span> <span class="o">&lt;&lt;</span> <span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'lib'</span><span class="p">,</span> <span class="s1">'models'</span><span class="p">,</span> <span class="s1">'*.rb'</span><span class="p">)</span>
+</pre>
+</div>
+
+
+<h2>Usage</h2>
+
+<p>Create a model and use the class method <code>#field</code> to define columns</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">field</span> <span class="ss">:title</span>
+    <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:text</span>
+    <span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Now run <code>rails g migration</code> with <code>--from</code> option</p>
+
+<pre><code>rails g migration init_posts_schema --from Post
+</code></pre>
+
+<p>and the following migration will be generated</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">InitPostsSchema</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:posts</span> 
+    <span class="n">add_column</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">add_column</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:text</span>
+
+    <span class="n">add_column</span> <span class="ss">:author_id</span><span class="p">,</span> <span class="ss">:integer</span>
+    <span class="n">index</span> <span class="ss">:author_id</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p><strong>NOTE:</strong> <code>create_table :posts</code> is added only if <code>posts</code> table does not exist yet</p>
+
+<p>Generating a migration for new columns is the same, lets add a new field to <code>Post</code> (eg. <code>pubdate</code>):</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+    <span class="n">field</span> <span class="ss">:title</span>
+    <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:text</span>
+    <span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+
+    <span class="n">field</span> <span class="ss">:pubdate</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:datetime</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Now run</p>
+
+<pre><code>rails g migration add_pubdate_to_posts --from Post
+</code></pre>
+
+<p>that will generate:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">AddPubdateToPosts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_column</span> <span class="ss">:posts</span><span class="p">,</span> <span class="ss">:pubdate</span><span class="p">,</span> <span class="ss">:datetime</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p><strong>NOTE:</strong> No migration will be generated in case all changes are up-to-date </p>
+
+<h2>Has and Belongs To Many (HBTM) associations</h2>
+
+<p>Lets try to add a HBTM association to our <code>Post</code> model</p>
+
+<p><em>ex.</em></p>
+
+<div class="highlight">
+<pre><span class="c1"># post.rb</span>
+<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">field</span> <span class="ss">:title</span>
+  <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:text</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+  <span class="n">field</span> <span class="ss">:pubdate</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:datetime</span>
+
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:voters</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Now running</p>
+
+<pre><code>rails g migration add_voters_to_posts --from Post
+</code></pre>
+
+<p>will generate:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">AddVotersToPosts</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:posts_users</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">"post_id"</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">"user_id"</span>
+    <span class="k">end</span>
+    <span class="n">add_index</span> <span class="ss">:posts_users</span><span class="p">,</span> <span class="s2">"post_id"</span>
+    <span class="n">add_index</span> <span class="ss">:posts_users</span><span class="p">,</span> <span class="s2">"user_id"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>Single Table Inheritance (STI)</h2>
+
+<p>Call <code>#inheritable</code> inside the base class of your hierarchy to add the inheritance column required by Single Table Inheritance.</p>
+
+<p><em>ex.</em></p>
+
+<div class="highlight">
+<pre><span class="c1"># content.rb</span>
+<span class="k">class</span> <span class="nc">Content</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">inheritable</span>
+
+  <span class="n">field</span> <span class="ss">:title</span>
+
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:voters</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+  <span class="n">belongs_to</span>              <span class="ss">:author</span><span class="p">,</span> <span class="ss">:class_name</span> <span class="o">=&gt;</span> <span class="s2">"User"</span>
+
+  <span class="n">timestamps</span>
+<span class="k">end</span>
+
+
+<span class="c1"># article.rb</span>
+<span class="k">class</span> <span class="nc">Article</span> <span class="o">&lt;</span> <span class="no">Content</span>
+  <span class="n">field</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:text</span>
+<span class="k">end</span>
+
+
+<span class="c1"># video.rb</span>
+<span class="k">class</span> <span class="nc">Video</span> <span class="o">&lt;</span> <span class="no">Content</span>
+  <span class="n">field</span> <span class="ss">:url</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Running</p>
+
+<pre><code>rails g migration init_contents --from Content
+</code></pre>
+
+<p>same as</p>
+
+<pre><code>rails g migration init_contents --from Article
+</code></pre>
+
+<p>same as</p>
+
+<pre><code>rails g migration init_contents --from Video
+</code></pre>
+
+<p>will generate the following migration </p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">InitContents</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_column</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:type</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">add_column</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">add_column</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:author_id</span><span class="p">,</span> <span class="ss">:string</span>
+    <span class="n">add_column</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:body</span><span class="p">,</span> <span class="ss">:text</span>
+    <span class="n">add_column</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:url</span><span class="p">,</span> <span class="ss">:string</span>
+
+    <span class="n">add_index</span> <span class="ss">:contents</span><span class="p">,</span> <span class="ss">:author_id</span>
+
+    <span class="n">create_table</span> <span class="ss">:contents_users</span><span class="p">,</span> <span class="ss">:id</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">"content_id"</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span>  <span class="s2">"user_id"</span>
+    <span class="k">end</span>
+    <span class="n">add_index</span> <span class="ss">:contents_users</span><span class="p">,</span> <span class="s2">"content_id"</span>
+    <span class="n">add_index</span> <span class="ss">:contents_users</span><span class="p">,</span> <span class="s2">"user_id"</span>
+  <span class="k">end</span>  
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>Mixins</h2>
+
+<p>Probably one of the most significant advantage given by ActiveRecordSchema is to allow the definition of fields in modules and reuse them through mixins</p>
+
+<p><em>ex.</em></p>
+
+<div class="highlight">
+<pre><span class="k">module</span> <span class="nn">Profile</span>
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+  <span class="n">included</span> <span class="k">do</span>
+    <span class="n">field</span> <span class="ss">:name</span>
+    <span class="n">field</span> <span class="ss">:age</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:integer</span>
+
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">Profile</span>
+
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Player</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">include</span> <span class="no">Profile</span>
+
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>DSL (Domain Specific Language) reference</h2>
+
+<ul>
+<li>
+<h3><code>field(name, *args)</code></h3>
+
+<p>Adds a new column with name <code>name</code> to the schema. The type of column can be passed either as second argument or as option, if not specified is intended to be <code>:string</code></p>
+
+<h4>options</h4>
+
+<ul>
+<li>
+<strong>:as</strong> <em>or</em> <strong>:type</strong> : Specify the type of the column. The value can be a <code>String</code>, a <code>Symbol</code> or a <code>Class</code>, default to <code>:string</code>
+</li>
+<li>
+<strong>:index</strong> : Specify wether or not the field should be indexed, default to <code>false</code>
+</li>
+</ul>
+<h4>examples</h4>
+
+<div class="highlight">
+<pre><span class="n">field</span> <span class="ss">:name</span>
+
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:string</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="s2">"string"</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="nb">String</span>
+
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:string</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="s2">"string"</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="nb">String</span>
+
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="ss">:string</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="s2">"string"</span>
+<span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:type</span> <span class="o">=&gt;</span> <span class="nb">String</span>
+
+<span class="n">field</span> <span class="ss">:age</span><span class="p">,</span> <span class="ss">:as</span> <span class="o">=&gt;</span> <span class="ss">:integer</span><span class="p">,</span> <span class="ss">:index</span> <span class="o">=&gt;</span> <span class="kp">true</span>
+</pre>
+</div>
+</li>
+<li>
+<h3><code>belongs_to(name, options = {})</code></h3>
+
+<p>Adds a new foreign key column for the association to the schema and then delegates to <code>ActiveRecord::Base.belongs_to</code>. If the association is polymorphic a column for foreign type is also generated.</p>
+
+<h4>options</h4>
+
+<ul>
+<li>
+<strong>:index</strong> : Specify wether or not the foreing key column should be indexed, default to <code>true</code>. If the association is polymorphic creates an index on both foreign key and foreing type</li>
+</ul>
+</li>
+<li>
+<h3><code>has_and_belongs_to_many(name, options = {}, &amp;extension)</code></h3>
+
+<p>Adds a new join table for the association to the schema and then delegates to <code>ActiveRecord::Base.has_and_belongs_to_many</code></p>
+</li>
+<li>
+<h3><code>index(column_name, options = {})</code></h3>
+
+<p>Adds a new index for <code>column_name</code> column to the schema</p>
+</li>
+<li>
+<h3><code>add_index(column_name, options = {})</code></h3>
+
+<p>alias for <code>index</code></p>
+</li>
+<li>
+<h3><code>timestamps</code></h3>
+
+<p>Same as</p>
+
+<div class="highlight">
+<pre><span class="n">field</span> <span class="ss">:created_at</span><span class="p">,</span> <span class="ss">:datetime</span>
+<span class="n">field</span> <span class="ss">:updated_at</span><span class="p">,</span> <span class="ss">:datetime</span>
+</pre>
+</div>
+</li>
+<li>
+<h3><code>inheritable</code></h3>
+
+<p>Same as</p>
+
+<div class="highlight">
+<pre><span class="n">field</span> <span class="ss">:"</span><span class="si">#{</span><span class="n">inheritance_column</span><span class="si">}</span><span class="ss">"</span>
+</pre>
+</div>
+</li>
+</ul><h2>Generators</h2>
+
+<h3><code>rails g model</code></h3>
+
+<pre><code>      [--inheritable]          # Add 'inheritable' to the generated model
+      [--timestamps]           # Add 'timestamps' to the generated model
+      [--scope=SCOPE]          # The subpath of app/models in which model file will be created
+      [--parent=PARENT]        # The parent class for the generated model
+  -t, [--test-framework=NAME]  # Test framework to be invoked
+                               # Default: test_unit
+</code></pre>
+
+<h3><code>rails g migration</code></h3>
+
+<pre><code>  [--from=FROM]  # calculates the changes to be applied on model table from the schema defined inside the model itself
+  [--id=N]       # The id to be used in this migration
+</code></pre>
+
+<h2>Why do not also generate irreversible changes (change/remove columns or indexes)?</h2>
+
+<p>ActiveRecordSchema does not take into account the removal of columns and indexes or changes in the types of columns. The reason for this is that these changes are not reversible, so it's a better idea to introduce them by hand rather than let them be generated automatically. Anyway the need to resort to harsh measures such as irreversible changes is limited to non-routine situations.</p>
+
+<h2>Contributing to active_record_schema</h2>
+
+<ul>
+<li>Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.</li>
+<li>Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.</li>
+<li>Fork the project.</li>
+<li>Start a feature/bugfix branch.</li>
+<li>Commit and push until you are happy with your contribution.</li>
+<li>Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.</li>
+<li>Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.</li>
+</ul><hr><p>Copyright (c) 2012 mcasimir</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">ActiveRecord Schema maintained by <a href="https://github.com/mcasimir">mcasimir</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
