@@ -1,0 +1,26 @@
+class <%= migration_class_name %> < ActiveRecord::Migration
+  def change
+<%- if !model.schema.table_exists? -%>
+    create_table :<%= model.schema.prefixed_table_name %>
+
+<%- end -%>
+<%- model.schema.diff(:fields, :add).each do |field| -%>
+    add_column :<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>, <%= field.type.inspect %><%= ", #{field.options.inspect}" if !field.options.blank? %>
+<%- end -%>
+
+<%- model.schema.diff(:indexes, :add).each do |index| -%>
+    add_index :<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %><%= ", #{index.options.inspect}" if !index.options.blank? %>
+<%- end -%>
+
+<%- model.schema.diff(:joins, :add).each do |join| -%>
+    create_table :<%= join.table %>, :id => false do |t|
+      t.integer  <%=  join.key1.inspect %>
+      t.integer  <%=  join.key2.inspect %>
+    end
+    <%- if join.index -%>
+    add_index :<%= join.table %>, <%= join.key1.inspect %>
+    add_index :<%= join.table %>, <%= join.key2.inspect %>
+    <%- end -%> 
+<%- end -%>
+  end  
+end

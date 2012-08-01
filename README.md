@@ -21,7 +21,8 @@ end
 ```
 
 ```
-rails g migration create_posts --from Post
+rails g migration:from post
+      create  db/migrate/20120801104035_create_posts.rb
 ```
 
 ## Features
@@ -81,7 +82,11 @@ end
 Now run `rails g migration` with `--from` option
 
     rails g migration init_posts_schema --from Post
-  
+    
+or just
+    
+    rails g migration:from post
+
 and the following migration will be generated
 
 ``` rb    
@@ -114,6 +119,10 @@ end
 Now run
 
     rails g migration add_pubdate_to_posts --from Post
+
+or just
+  
+    rails g migration:from post --add pubdate
 
 that will generate:
 
@@ -333,6 +342,47 @@ end
 
 
 ## Generators
+
+### `rails g migration:from`
+
+Generates one or more migration from models 
+
+*eg.*
+
+```
+rails g migration:from link setting user menu photo photogallery
+      create  db/migrate/20120801104031_create_links.rb
+      create  db/migrate/20120801104032_create_settings.rb
+      create  db/migrate/20120801104033_create_users.rb
+      create  db/migrate/20120801104034_create_menus.rb
+      create  db/migrate/20120801104035_create_photos.rb
+      create  db/migrate/20120801104036_create_photogalleries.rb
+```
+
+You can also generate a migration to add columns setting its name in a handy way *eg.*
+
+``` sh
+rails g migration:from post --add title description
+      create  db/migrate/20120801104036_add_title_and_description_to_posts.rb
+```
+
+# rails g migration:from post --add name address
+
+
+```
+Usage:
+  rails generate migration:from [model model] [options]
+
+Options:
+  [--add=attrname attrname]  # Indicates when to generate add
+
+Runtime options:
+  -f, [--force]    # Overwrite files that already exist
+  -p, [--pretend]  # Run but do not make any changes
+  -q, [--quiet]    # Suppress status output
+  -s, [--skip]     # Skip files that already exist
+
+```
 
 ### `rails g model`
 
