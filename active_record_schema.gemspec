@@ -34,7 +34,8 @@ Gem::Specification.new do |s|
     "lib/active_record_schema/schema.rb",
     "lib/active_record_schema/schema_diff.rb",
     "lib/generators/migration/from_generator.rb",
-    "lib/generators/migration/templates/migration_from_model.rb.erb"
+    "lib/generators/migration/templates/migration_from_model.rb.erb",
+    "lib/generators/model_generator.rb"
   ]
   s.homepage = "http://github.com/mcasimir/active_record_schema"
   s.licenses = ["MIT"]
