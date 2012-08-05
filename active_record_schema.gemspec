@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "active_record_schema"
-  s.version = "0.5.1"
+  s.version = "0.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["mcasimir"]
@@ -34,8 +34,7 @@ Gem::Specification.new do |s|
     "lib/active_record_schema/schema.rb",
     "lib/active_record_schema/schema_diff.rb",
     "lib/generators/migration/from_generator.rb",
-    "lib/generators/migration/templates/migration_from_model.rb.erb",
-    "lib/generators/model_generator.rb"
+    "lib/generators/migration/templates/migration_from_model.rb.erb"
   ]
   s.homepage = "http://github.com/mcasimir/active_record_schema"
   s.licenses = ["MIT"]
