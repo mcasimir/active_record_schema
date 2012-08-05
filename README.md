@@ -366,40 +366,12 @@ rails g migration:from post --add title description
       create  db/migrate/20120801104036_add_title_and_description_to_posts.rb
 ```
 
-# rails g migration:from post --add name address
-
-
 ```
 Usage:
   rails generate migration:from [model model] [options]
 
 Options:
   [--add=attrname attrname]  # Indicates when to generate add
-
-Runtime options:
-  -f, [--force]    # Overwrite files that already exist
-  -p, [--pretend]  # Run but do not make any changes
-  -q, [--quiet]    # Suppress status output
-  -s, [--skip]     # Skip files that already exist
-
-```
-
-### `rails g model`
-
-``` 
-      [--inheritable]          # Add 'inheritable' to the generated model
-      [--timestamps]           # Add 'timestamps' to the generated model
-      [--scope=SCOPE]          # The subpath of app/models in which model file will be created
-      [--parent=PARENT]        # The parent class for the generated model
-  -t, [--test-framework=NAME]  # Test framework to be invoked
-                               # Default: test_unit
-```
-
-### `rails g migration`
-
-```
-  [--from=FROM]  # calculates the changes to be applied on model table from the schema defined inside the model itself
-  [--id=N]       # The id to be used in this migration
 ```
 
 ## Why do not also generate irreversible changes (change/remove columns or indexes)?

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "active_record_schema"
-  s.version = "0.5.0"
+  s.version = "0.5.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["mcasimir"]
-  s.date = "2012-08-01"
+  s.date = "2012-08-05"
   s.description = "ActiveRecordSchema is an ActiveRecord extension that allows you to write the database schema for a model within the model itself and to generate migrations directly from models."
   s.email = "maurizio.cas@gmail.com"
   s.extra_rdoc_files = [
@@ -33,13 +33,6 @@ Gem::Specification.new do |s|
     "lib/active_record_schema/railtie.rb",
     "lib/active_record_schema/schema.rb",
     "lib/active_record_schema/schema_diff.rb",
-    "lib/generators/active_record_schema.rb",
-    "lib/generators/active_record_schema/migration/migration_generator.rb",
-    "lib/generators/active_record_schema/migration/templates/migration.rb",
-    "lib/generators/active_record_schema/migration/templates/migration_from_model.rb.erb",
-    "lib/generators/active_record_schema/model/model_generator.rb",
-    "lib/generators/active_record_schema/model/templates/model.rb",
-    "lib/generators/active_record_schema/model/templates/module.rb",
     "lib/generators/migration/from_generator.rb",
     "lib/generators/migration/templates/migration_from_model.rb.erb"
   ]
