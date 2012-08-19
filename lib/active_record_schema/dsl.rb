@@ -4,14 +4,8 @@ module ActiveRecordSchema
   module Dsl
     extend ActiveSupport::Concern
     module ClassMethods
-     
-      def schema    
-        # if self.superclass != ActiveRecord::Base
-        #   table_holder = self.ancestors.find {|c| c.is_a?(Class) && c.superclass == ActiveRecord::Base}
-        #   table_holder.schema
-        # else
-        # end
-
+          
+      def schema
         @active_record_schema_schema ||= ActiveRecordSchema::Schema.new(self)
         
       end # ~ schema

@@ -15,6 +15,17 @@ module ActiveRecordSchema
       @indexes = {}
       @joins   = {}
     end
+    
+    def hierarchy_fields
+      if @hierarchy_fields
+        @hierarchy_fields
+      else
+        @hierarchy_fields ||= ActiveSupport::OrderedHash.new
+        self.ancestors.select { |c| c.is_a?(Class) && c.superclass == ActiveRecord::Base }.reverse_each do |klass|
+          @hierarchy_fields = @hierarchy_fields.merge(klass.fields)
+        end      
+      end
+    end    
 
     def field_names
       fields.values.map(&:name).map(&:to_s)
