@@ -22,12 +22,12 @@ module ActiveRecordSchema
       else
         @hierarchy_fields ||= ActiveSupport::OrderedHash.new
         model.ancestors.select { |c| c < ActiveRecord::Base }.reverse_each do |klass|
-          @hierarchy_fields = @hierarchy_fields.merge(klass.fields)
+          @hierarchy_fields = @hierarchy_fields.merge(klass.schema.fields)
         end      
       end
     end
     
-    def hierarchy_fields_names
+    def hierarchy_field_names
       hierarchy_fields.values.map(&:name).map(&:to_s)
     end
 
