@@ -11,7 +11,7 @@ module ActiveRecordSchema
     
     def initialize(model)
       @model   = model
-      @fields  = {}
+      @fields  = ActiveSupport::OrderedHash.new
       @indexes = {}
       @joins   = {}
     end

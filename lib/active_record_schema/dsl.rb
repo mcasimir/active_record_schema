@@ -6,12 +6,14 @@ module ActiveRecordSchema
     module ClassMethods
      
       def schema    
-        if self.superclass != ActiveRecord::Base
-          table_holder = self.ancestors.find {|c| c.is_a?(Class) && c.superclass == ActiveRecord::Base}
-          table_holder.schema
-        else
-          @active_record_schema_schema ||= ActiveRecordSchema::Schema.new(self)
-        end
+        # if self.superclass != ActiveRecord::Base
+        #   table_holder = self.ancestors.find {|c| c.is_a?(Class) && c.superclass == ActiveRecord::Base}
+        #   table_holder.schema
+        # else
+        # end
+
+        @active_record_schema_schema ||= ActiveRecordSchema::Schema.new(self)
+        
       end # ~ schema
           
        # field :name, :string, :default => "Joe"      
