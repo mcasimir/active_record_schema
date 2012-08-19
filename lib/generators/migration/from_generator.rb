@@ -47,7 +47,7 @@ module Migration
        
     def models
       @models ||= model_names.map {|name|
-        name.camelize.constantize
+        name.singularize.camelize.constantize
       } 
     end
     
