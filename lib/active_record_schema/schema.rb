@@ -23,7 +23,8 @@ module ActiveRecordSchema
         @hierarchy_fields ||= ActiveSupport::OrderedHash.new
         model.ancestors.select { |c| c < ActiveRecord::Base }.reverse_each do |klass|
           @hierarchy_fields = @hierarchy_fields.merge(klass.schema.fields)
-        end      
+        end
+        @hierarchy_fields  
       end
     end
     
