@@ -40,6 +40,10 @@ module Migration
     def model
       @current_model
     end
+    
+    def inherits?
+      model.superclass < ActiveRecord::Base
+    end
        
     def models
       @models ||= model_names.map {|name|
