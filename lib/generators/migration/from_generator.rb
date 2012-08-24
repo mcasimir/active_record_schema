@@ -30,7 +30,7 @@ module Migration
     def create_migrations
       models.each do |current_model|
         @current_model = current_model
-        migration_file_name = "#{migration_prefix}_#{current_model.name.underscore.gsub('::', '_').pluralize}"
+        migration_file_name = "#{migration_prefix}_#{current_model.name.underscore.gsub('/', '_').pluralize}"
         migration_template "migration_from_model.rb.erb", "db/migrate/#{migration_file_name}.rb"
       end
     end
