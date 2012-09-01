@@ -5,11 +5,11 @@ class <%= migration_class_name %> < ActiveRecord::Migration
 
 <%- end -%>
 <%- model.schema.diff(:fields, :add).each do |field| -%>
-    add_column :<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>, <%= field.type.inspect %><%= ", #{field.options.inspect}" if !field.options.blank? %> unless column_exists?(:<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>)
+    add_column(:<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>, <%= field.type.inspect %><%= ", #{field.options.inspect}" if !field.options.blank? %>) unless column_exists?(:<%= model.schema.prefixed_table_name %>, <%= field.name.inspect %>)
 <%- end -%>
 
 <%- model.schema.diff(:indexes, :add).each do |index| -%>
-    add_index :<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %><%= ", #{index.options.inspect}" if !index.options.blank? %> unless index_exists?(:<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %>)
+    add_index(:<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %><%= ", #{index.options.inspect}" if !index.options.blank? %>) unless index_exists?(:<%= model.schema.prefixed_table_name %>, <%= index.name.inspect %>)
 <%- end -%>
 
 <%- model.schema.diff(:joins, :add).each do |join| -%>
